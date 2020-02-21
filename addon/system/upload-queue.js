@@ -3,6 +3,7 @@ import Ember from 'ember';
 import File from './file';
 import trim from './trim';
 import sumBy from '../system/sum-by';
+import { parseHTML } from './parsing';
 
 const { get, set } = Ember;
 const { copy, merge } = Ember;
@@ -77,13 +78,13 @@ export default Ember.ArrayProxy.extend({
   },
 
   runtimeDidChange() {
-    let $input = get(this, 'target').$('.moxie-shim input');
-    let ruid = $input.attr('id');
+    let $input = get(this, 'target').element.querySelector('.moxie-shim input');
+    let ruid = $input.getAttribute('id');
     let I = moxie.runtime.Runtime.getInfo(ruid);
 
     // Polyfill mobile support
     if (!I.can('summon_file_dialog')) {
-      $input.attr('capture', 'camera');
+      $input.getAttribute('capture', 'camera');
     }
   },
 
@@ -199,13 +200,13 @@ export default Ember.ArrayProxy.extend({
     let contentType = (getHeader(headers, 'Content-Type') || '').split(';');
     // Parse body according to the Content-Type received by the server
     if (contentType.indexOf('text/html') !== -1) {
-      body = Ember.$.parseHTML(body);
+      body = parseHTML(body);
     } else if (contentType.indexOf('text/xml') !== -1) {
-      body = Ember.$.parseXML(body);
+      body = Ember.$.parseXML(body); // TODO: replace with non jquery alternative
     } else if (contentType.indexOf('application/json') !== -1 ||
                contentType.indexOf('text/javascript') !== -1 ||
                contentType.indexOf('application/javascript') !== -1) {
-      body = Ember.$.parseJSON(body);
+      body = JSON.parse(body);
     }
 
     return {

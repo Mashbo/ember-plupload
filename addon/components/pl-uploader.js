@@ -161,7 +161,7 @@ export default Ember.Component.extend({
       };
 
       keys(handlers).forEach(function (key) {
-        Ember.$(document).on(key, '#' + dropzoneId, handlers[key]);
+        document.getElementById(dropzoneId).addEventListener(key, handlers[key]);
       });
     }
   },
@@ -182,7 +182,7 @@ export default Ember.Component.extend({
     if (dropzoneId) {
       var handlers = this.eventHandlers;
       keys(handlers).forEach(function (key) {
-        Ember.$(document).off(key, '#' + dropzoneId, handlers[key]);
+        document.getElementById(dropzoneId).removeEventListener(key, handlers[key]); 
       });
       this.eventHandlers = null;
     }
