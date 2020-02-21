@@ -161,7 +161,9 @@ export default Ember.Component.extend({
       };
 
       keys(handlers).forEach(function (key) {
-        document.getElementById(dropzoneId).addEventListener(key, handlers[key]);
+        document.getElementById(dropzoneId).addEventListener(key, function(e) {
+          handlers[key](e);
+        });
       });
     }
   },
@@ -189,7 +191,7 @@ export default Ember.Component.extend({
   }),
 
   dragData: null,
-  enteredDropzone({ originalEvent: evt }) {
+  enteredDropzone(evt) {
     if (this._dragInProgress === false) {
         this._dragInProgress = true;
         this.activateDropzone(evt);
